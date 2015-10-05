@@ -12,6 +12,8 @@ namespace Mazzate
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Texture2D spriteSheet;
+        List<Giocatore> listaGiocatori = new List<Giocatore>();
 
         public Game1()
         {
@@ -29,7 +31,6 @@ namespace Mazzate
         {
             int numeroGiocatori = 2;
             int guerrieriPerGiocatore = 3;
-            List<Giocatore> listaGiocatori = new List<Giocatore>();
 
             for (int i = 0; i < numeroGiocatori; i++)
             {
@@ -39,8 +40,12 @@ namespace Mazzate
             foreach (Giocatore giocatore in listaGiocatori)
             {
                 giocatore.creaGuerrieri(guerrieriPerGiocatore);
-
+                foreach (Guerriero guerriero in giocatore.listaGuerrieri) {
+                    guerriero.coordSpawnGuerriero(giocatore.colore, this);
+                }
             }
+
+
 
             base.Initialize();
         }
@@ -53,8 +58,8 @@ namespace Mazzate
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteSheet = Content.Load<Texture2D>(@"immagini\guerrieri_1.1");
 
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -87,10 +92,36 @@ namespace Mazzate
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.AliceBlue);
+            spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
+            Rectangle dstRect;
+            Rectangle srcRect;
+            Color colore;
+            int j = 0;
 
+            foreach (Giocatore giocatore in listaGiocatori)
+            {
+                int i = 0;
+                switch (j)
+                {
+                    case 0: colore = Color.DarkRed; break;
+                    case 1: colore = Color.DarkSlateBlue; break;
+                    default: colore = Color.White; break;
+                }
+                j++;
+                foreach (Guerriero guerriero in giocatore.listaGuerrieri)
+                {
+
+                    dstRect = new Rectangle(guerriero.posizione, new Point(64, 64));
+                    srcRect = new Rectangle(i * 64, 0, 64, 64);
+
+                    spriteBatch.Draw(spriteSheet, dstRect, srcRect, Color.DarkRed);
+                    i++;
+                }
+            }
+
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Mazzate
 {
@@ -31,8 +33,9 @@ namespace Mazzate
             return;
         }
 
+
         public Colore colore { get; set; }
-        List<Guerriero> listaGuerrieri = new List<Guerriero>();
+        public List<Guerriero> listaGuerrieri = new List<Guerriero>();
     }
 
 
