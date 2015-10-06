@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 
 namespace Mazzate
 {
@@ -93,11 +94,12 @@ namespace Mazzate
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.AliceBlue);
-            spriteBatch.Begin();
+            spriteBatch.Begin(blendState: BlendState.AlphaBlend);
 
             Rectangle dstRect;
             Rectangle srcRect;
             Color colore;
+            SpriteEffects flip;
             int j = 0;
 
             foreach (Giocatore giocatore in listaGiocatori)
@@ -105,9 +107,9 @@ namespace Mazzate
                 int i = 0;
                 switch (j)
                 {
-                    case 0: colore = Color.DarkRed; break;
-                    case 1: colore = Color.DarkSlateBlue; break;
-                    default: colore = Color.White; break;
+                    case 0: colore = Color.DarkRed; flip = SpriteEffects.None; break;
+                    case 1: colore = Color.DarkSlateBlue; flip = SpriteEffects.FlipHorizontally; break;
+                    default: colore = Color.White; flip = SpriteEffects.FlipHorizontally; break;
                 }
                 j++;
                 foreach (Guerriero guerriero in giocatore.listaGuerrieri)
@@ -116,7 +118,12 @@ namespace Mazzate
                     dstRect = new Rectangle(guerriero.posizione, new Point(64, 64));
                     srcRect = new Rectangle(i * 64, 0, 64, 64);
 
-                    spriteBatch.Draw(spriteSheet, dstRect, srcRect, Color.DarkRed);
+
+                    spriteBatch.Draw(spriteSheet, 
+                        destinationRectangle: dstRect,
+                        sourceRectangle: srcRect,
+                        color: colore,
+                        effects: SpriteEffects.FlipHorizontally);
                     i++;
                 }
             }

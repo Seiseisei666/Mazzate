@@ -24,11 +24,10 @@ namespace Mazzate
 
         public void coordSpawnGuerriero(Colore coloreGiocatore, Game1 game)
         {
-            Random rand = new Random();
             int xSpawn = rand.Next(32, (game.Window.ClientBounds.Right - 32));
             int ySpawn;
 
-            if (coloreGiocatore == Colore.rosso) ySpawn = 96;
+            if (coloreGiocatore == Colore.rosso) ySpawn = 0;
             else ySpawn = game.Window.ClientBounds.Bottom - 64;
 
             posizione = new Point(xSpawn, ySpawn);
@@ -43,5 +42,6 @@ namespace Mazzate
         public int[] abilitaTipoDanno; // Taglio Perforazione Impatto
         public int[] abilitaTipoArma; // 1mano 2mani Lunghe Lancio Tiro Scudi
 
+        static Random rand = new Random();
     }
 }

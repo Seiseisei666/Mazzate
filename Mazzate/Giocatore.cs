@@ -28,7 +28,7 @@ namespace Mazzate
         {
             for (int j = 0; j < nGuerrieri; j++)
             {
-                listaGuerrieri.Add(new Guerriero(100, 100));
+                listaGuerrieri.Add(new Guerriero(100*j, 100*j));
             }
             return;
         }
