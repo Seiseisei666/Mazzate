@@ -12,9 +12,11 @@ namespace Mazzate
         public Guerriero(int mor, int hp)
         {
             posizione = new Point(-1);
+            nuovaPosizione = new Point(-10);
+            checkCollisione = false;
+
             morale = mor;
             puntiVita = hp;
-
             abilitaTipoDanno = new int[3];
             abilitaTipoArma = new int[6];
 
@@ -24,7 +26,8 @@ namespace Mazzate
 
         public void coordSpawnGuerriero(Colore coloreGiocatore, Game1 game)
         {
-            int xSpawn = rand.Next(32, (game.Window.ClientBounds.Right - 32));
+            int rnd = rand.Next(0, (game.Window.ClientBounds.Right - 64));
+            int xSpawn = 64 * (int)(rnd / 64);
             int ySpawn;
 
             if (coloreGiocatore == Colore.rosso) ySpawn = 0;
@@ -35,6 +38,8 @@ namespace Mazzate
 
 
         public Point posizione { get; set; }
+        public Point nuovaPosizione { get; set; }
+        public bool checkCollisione { get; set; }
 
         public int morale { get; set; }
         public int puntiVita { get; set; }

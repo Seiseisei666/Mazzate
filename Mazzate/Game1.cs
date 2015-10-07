@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace Mazzate
 {
@@ -15,6 +16,8 @@ namespace Mazzate
         SpriteBatch spriteBatch;
         Texture2D spriteSheet;
         List<Giocatore> listaGiocatori = new List<Giocatore>();
+        List<Guerriero> tuttiGuerrieri = new List<Guerriero>();
+        ManagerGuerrieri mngGuerrieri = new ManagerGuerrieri();
 
         public Game1()
         {
@@ -44,9 +47,9 @@ namespace Mazzate
                 foreach (Guerriero guerriero in giocatore.listaGuerrieri) {
                     guerriero.coordSpawnGuerriero(giocatore.colore, this);
                 }
+                tuttiGuerrieri.AddRange(giocatore.listaGuerrieri);
             }
-
-
+            mngGuerrieri.sistemaCollisioni(tuttiGuerrieri);
 
             base.Initialize();
         }
@@ -59,7 +62,7 @@ namespace Mazzate
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            spriteSheet = Content.Load<Texture2D>(@"immagini\guerrieri_1.1");
+            spriteSheet = Content.Load<Texture2D>(@"immagini\guerrieri_1.2");
 
         }
 
@@ -82,7 +85,15 @@ namespace Mazzate
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            foreach (Guerriero guerriero in tuttiGuerrieri) { if (guerriero.nuovaPosizione.X > -10 && guerriero.nuovaPosizione.Y > -10) { guerriero.posizione = guerriero.nuovaPosizione; guerriero.nuovaPosizione = new Point(-1); } };
+
+            foreach (Guerriero guerriero in listaGiocatori[0].listaGuerrieri) { guerriero.nuovaPosizione = guerriero.posizione + new Point(0, 2); }
+            foreach (Guerriero guerriero in listaGiocatori[1].listaGuerrieri) { guerriero.nuovaPosizione = guerriero.posizione + new Point(0, -2); }
+
+            mngGuerrieri.sistemaCollisioni(tuttiGuerrieri);
+            mngGuerrieri.impedisciUscitaSchermo(tuttiGuerrieri, this);
+
+            Console.WriteLine("pos 0: " + tuttiGuerrieri[0].nuovaPosizione.Y + "pos 3: " + tuttiGuerrieri[3].nuovaPosizione.Y);
 
             base.Update(gameTime);
         }
@@ -94,7 +105,7 @@ namespace Mazzate
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.AliceBlue);
-            spriteBatch.Begin(blendState: BlendState.AlphaBlend);
+            spriteBatch.Begin();
 
             Rectangle dstRect;
             Rectangle srcRect;
@@ -107,23 +118,18 @@ namespace Mazzate
                 int i = 0;
                 switch (j)
                 {
-                    case 0: colore = Color.DarkRed; flip = SpriteEffects.None; break;
-                    case 1: colore = Color.DarkSlateBlue; flip = SpriteEffects.FlipHorizontally; break;
-                    default: colore = Color.White; flip = SpriteEffects.FlipHorizontally; break;
+                    case 0: colore = Color.DarkRed; flip = SpriteEffects.FlipVertically; break;
+                    case 1: colore = Color.DarkBlue; flip = SpriteEffects.None; break;
+                    default: colore = Color.White; flip = SpriteEffects.None; break;
                 }
                 j++;
                 foreach (Guerriero guerriero in giocatore.listaGuerrieri)
                 {
 
-                    dstRect = new Rectangle(guerriero.posizione, new Point(64, 64));
+                    dstRect = new Rectangle(guerriero.nuovaPosizione, new Point(64, 64));
                     srcRect = new Rectangle(i * 64, 0, 64, 64);
 
-
-                    spriteBatch.Draw(spriteSheet, 
-                        destinationRectangle: dstRect,
-                        sourceRectangle: srcRect,
-                        color: colore,
-                        effects: SpriteEffects.FlipHorizontally);
+                    spriteBatch.Draw(spriteSheet, dstRect, srcRect, colore, 0f, Vector2.Zero, flip, 0f);
                     i++;
                 }
             }
