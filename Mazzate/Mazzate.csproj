@@ -42,6 +42,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Giocatore.cs" />
     <Compile Include="Guerriero.cs" />
+    <Compile Include="ManagerGiocatori.cs" />
     <Compile Include="ManagerGuerrieri.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -19,23 +19,46 @@ namespace Mazzate
     public class Giocatore
     {
 
-        public Giocatore (Colore id, List<Guerriero> lisGuerrieri) {
-            colore = id;
-            listaGuerrieri = lisGuerrieri;
+        public Giocatore(Colore colore, Guerriero [] guerrieri)
+        {
+            this.colore = colore;
+
         }
-        
+        public Giocatore (Colore colore)
+        {
+            this.colore = colore;
+        }
+
         public void creaGuerrieri(int nGuerrieri)
         {
-            for (int j = 0; j < nGuerrieri; j++)
-            {
-                listaGuerrieri.Add(new Guerriero(100*j, 100*j));
-            }
-            return;
+           // Spostato in ManagerGuerrieri
         }
 
+        public Colore Colore { get { return colore; } }
 
-        public Colore colore { get; set; }
-        public List<Guerriero> listaGuerrieri { get; set; }
+
+        private Colore colore;
+
+        public Color SpriteColor
+        {
+            get
+            {
+                switch (colore)
+                {
+                    case Colore.blu:
+                        return Color.Blue; 
+                    case Colore.giallo:
+                        return Color.Yellow; 
+                    case Colore.rosso:
+                        return Color.Red; 
+                    case Colore.verde:
+                        return Color.Green;
+
+                    default: return Color.Gray;
+                }
+            }
+        }
+       // private Guerriero[] guerrieri;
     }
 
 

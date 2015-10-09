@@ -17,12 +17,14 @@ namespace Mazzate
         Texture2D spriteSheet;
         List<Giocatore> listaGiocatori = new List<Giocatore>();
         List<Guerriero> tuttiGuerrieri = new List<Guerriero>();
-        ManagerGuerrieri mngGuerrieri = new ManagerGuerrieri();
+        ManagerGuerrieri mngGuerrieri;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            mngGuerrieri = new ManagerGuerrieri(this);
         }
 
         /// <summary>
@@ -33,23 +35,22 @@ namespace Mazzate
         /// </summary>
         protected override void Initialize()
         {
-            int numeroGiocatori = 2;
-            int guerrieriPerGiocatore = 3;
+            const int NUM_GIOCATORI = 2;
+            const int GUERRIERI_PER_GIOCATORE = 1;
 
-            for (int i = 0; i < numeroGiocatori; i++)
+            for (int i = 0; i < NUM_GIOCATORI; i++)
             {
-                listaGiocatori.Add(new Giocatore((Colore)i, new List<Guerriero>()));
+                listaGiocatori.Add(new Giocatore((Colore)i));
             }
 
             foreach (Giocatore giocatore in listaGiocatori)
             {
-                giocatore.creaGuerrieri(guerrieriPerGiocatore);
-                foreach (Guerriero guerriero in giocatore.listaGuerrieri) {
-                    guerriero.coordSpawnGuerriero(giocatore.colore, this);
-                }
-                tuttiGuerrieri.AddRange(giocatore.listaGuerrieri);
+                mngGuerrieri.CreaGuerrieri(giocatore, GUERRIERI_PER_GIOCATORE);
             }
-            mngGuerrieri.sistemaCollisioni(tuttiGuerrieri);
+
+            mngGuerrieri.SpawnaGuerrieri();
+
+            Components.Add(mngGuerrieri);
 
             base.Initialize();
         }
@@ -62,6 +63,8 @@ namespace Mazzate
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            Services.AddService(spriteBatch);
+
             spriteSheet = Content.Load<Texture2D>(@"immagini\guerrieri_1.2");
 
         }
@@ -82,18 +85,8 @@ namespace Mazzate
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            
 
-            foreach (Guerriero guerriero in tuttiGuerrieri) { if (guerriero.nuovaPosizione.X > -10 && guerriero.nuovaPosizione.Y > -10) { guerriero.posizione = guerriero.nuovaPosizione; guerriero.nuovaPosizione = new Point(-1); } };
-
-            foreach (Guerriero guerriero in listaGiocatori[0].listaGuerrieri) { guerriero.nuovaPosizione = guerriero.posizione + new Point(0, 2); }
-            foreach (Guerriero guerriero in listaGiocatori[1].listaGuerrieri) { guerriero.nuovaPosizione = guerriero.posizione + new Point(0, -2); }
-
-            mngGuerrieri.sistemaCollisioni(tuttiGuerrieri);
-            mngGuerrieri.impedisciUscitaSchermo(tuttiGuerrieri, this);
-
-            Console.WriteLine("pos 0: " + tuttiGuerrieri[0].nuovaPosizione.Y + "pos 3: " + tuttiGuerrieri[3].nuovaPosizione.Y);
 
             base.Update(gameTime);
         }
@@ -107,34 +100,10 @@ namespace Mazzate
             GraphicsDevice.Clear(Color.AliceBlue);
             spriteBatch.Begin();
 
-            Rectangle dstRect;
-            Rectangle srcRect;
-            Color colore;
-            SpriteEffects flip;
-            int j = 0;
 
-            foreach (Giocatore giocatore in listaGiocatori)
-            {
-                int i = 0;
-                switch (j)
-                {
-                    case 0: colore = Color.DarkRed; flip = SpriteEffects.FlipVertically; break;
-                    case 1: colore = Color.DarkBlue; flip = SpriteEffects.None; break;
-                    default: colore = Color.White; flip = SpriteEffects.None; break;
-                }
-                j++;
-                foreach (Guerriero guerriero in giocatore.listaGuerrieri)
-                {
-
-                    dstRect = new Rectangle(guerriero.nuovaPosizione, new Point(64, 64));
-                    srcRect = new Rectangle(i * 64, 0, 64, 64);
-
-                    spriteBatch.Draw(spriteSheet, dstRect, srcRect, colore, 0f, Vector2.Zero, flip, 0f);
-                    i++;
-                }
-            }
-
+            mngGuerrieri.Draw(spriteSheet, spriteBatch);
             spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }
