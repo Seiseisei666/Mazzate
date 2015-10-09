@@ -73,6 +73,9 @@ namespace Mazzate
             }
         }
 
+        /// <summary>
+        /// TEMPORANEO - indica se l'unità è a contatto con un'altra
+        /// </summary>
         public bool CorpoACorpo { set { corpoAcorpo = value; } }
         bool corpoAcorpo = false;
 
@@ -84,19 +87,22 @@ namespace Mazzate
         public int Morale { get; set; }
         public int PuntiVita { get; set; }
 
+        /// <summary>
+        /// Questi non li ho capiti O__O
+        /// </summary>
         public int[] abilitaTipoDanno; // Taglio Perforazione Impatto
         public int[] abilitaTipoArma; // 1mano 2mani Lunghe Lancio Tiro Scudi
 
         public Colore Colore { get { return Proprietario.Colore; } }
         public Giocatore Proprietario { get; protected set; }
 
-        Vector2 posizione, nuovaPosizione;
+        Vector2 posizione;
         bool _inGioco = false;
 
         Vector2 temp_velocità { get
             {
-                if (Colore == Colore.rosso) return new Vector2(0, 2.1f);
-                else return new Vector2(0, -2.1f);
+                if (Colore == Colore.rosso) return new Vector2(0, 1.7f);
+                else return new Vector2(0, -1.7f);
             }
         }
     }

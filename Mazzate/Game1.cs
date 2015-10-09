@@ -36,7 +36,7 @@ namespace Mazzate
         protected override void Initialize()
         {
             const int NUM_GIOCATORI = 2;
-            const int GUERRIERI_PER_GIOCATORE = 1;
+            const int GUERRIERI_PER_GIOCATORE = 5;
 
             for (int i = 0; i < NUM_GIOCATORI; i++)
             {
